@@ -17,6 +17,7 @@ import java.io.Serializable;
 @Data
 @TableName("t_user")
 public class UserDO extends BaseDO implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @TableId(type =  IdType.AUTO)
