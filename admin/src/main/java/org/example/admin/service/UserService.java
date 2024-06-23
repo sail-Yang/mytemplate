@@ -3,6 +3,7 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.admin.dao.entity.UserDO;
 import org.example.admin.dto.req.UserRegisterReqDTO;
+import org.example.admin.dto.resp.UserRespDTO;
 
 /**
  * @author yangfan
@@ -24,4 +25,11 @@ public interface UserService extends IService<UserDO> {
      * @return
      */
     void register(UserRegisterReqDTO requestParam);
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    UserRespDTO getUserByUsername(String username);
 }

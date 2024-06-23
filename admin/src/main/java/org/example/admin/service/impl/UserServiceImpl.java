@@ -1,17 +1,23 @@
 package org.example.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.example.admin.common.convention.exception.ClientException;
+import org.example.admin.common.convention.exception.ServiceException;
 import org.example.admin.common.enums.UserErrorCodeEnum;
 import org.example.admin.dao.entity.UserDO;
 import org.example.admin.dao.mapper.UserMapper;
 import org.example.admin.dto.req.UserRegisterReqDTO;
+import org.example.admin.dto.resp.UserRespDTO;
 import org.example.admin.service.UserService;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +65,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    public UserRespDTO getUserByUsername(String username) {
+        LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
+                .eq(UserDO::getUsername, username);
+        UserDO userDO = baseMapper.selectOne(queryWrapper);
+        if(null == userDO) {
+            throw new ServiceException(UserErrorCodeEnum.USER_NULL);
+        }
+        UserRespDTO result = new UserRespDTO();
+        BeanUtils.copyProperties(userDO, result);
+        return result;
     }
 }
